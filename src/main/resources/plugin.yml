@@ -1,0 +1,19 @@
+name: Delight
+version: '${project.version}'
+main: dev.mbento.delight.DelightMain
+api-version: '1.20'
+load: POSTWORLD
+author: mbento
+website: https://github.com/mbentogyo/delight
+description: Bliss plugin but my version
+prefix: Delight
+commands:
+  bringback:
+    usage: /bringback <player>
+    permission: delight.*
+  setgem:
+    usage: /setgem <player> <lives> <isPristine>
+    permission: delight.*
+permissions:
+  delight.*:
+    description: All the permissions of Delight plugin

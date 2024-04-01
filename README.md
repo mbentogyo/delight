@@ -1,2 +1,2 @@
 # delight
-Trying to recreate Bliss without any bad dependencies
+Bliss plugin but my version
