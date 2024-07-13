@@ -1,18 +1,20 @@
-package dev.mbento.delight.gems;
+package dev.mbento.delight.gem;
 
-import dev.mbento.delight.gems.astra.AstraGem;
-import dev.mbento.delight.gems.fire.FireGem;
-import dev.mbento.delight.gems.life.LifeGem;
-import dev.mbento.delight.gems.puff.PuffGem;
-import dev.mbento.delight.gems.speed.SpeedGem;
-import dev.mbento.delight.gems.strength.StrengthGem;
-import dev.mbento.delight.gems.wealth.WealthGem;
-import dev.mbento.delight.utilities.ItemUtils;
+import dev.mbento.delight.gem.gems.AstraGem;
+import dev.mbento.delight.gem.gems.FireGem;
+import dev.mbento.delight.gem.gems.LifeGem;
+import dev.mbento.delight.gem.gems.PuffGem;
+import dev.mbento.delight.gem.gems.SpeedGem;
+import dev.mbento.delight.gem.gems.StrengthGem;
+import dev.mbento.delight.gem.gems.WealthGem;
+import dev.mbento.delight.utility.Utilities;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Getter
@@ -40,7 +42,7 @@ public enum GemsEnum {
      * @return GemsEnum entry, null if none found
      */
     @Nullable
-    public static Gem getById(String id){
+    public static Gem getById(@NotNull String id){
         for (GemsEnum gemsEnum : GemsEnum.values()){
             if (gemsEnum.getGem().getId().equalsIgnoreCase(id)) {
                 return gemsEnum.getGem();
@@ -56,8 +58,8 @@ public enum GemsEnum {
      * @return GemsEnum entry, null if none found
      */
     @Nullable
-    public static Gem getByItem(ItemStack item){
-        String id = ItemUtils.getStringFromItem(item, "id");
+    public static Gem getByItem(@NotNull ItemStack item){
+        String id = Utilities.getStringFromItem(item, "id");
         if (id == null) return null;
         return getById(id);
     }
@@ -86,13 +88,22 @@ public enum GemsEnum {
      * @param excluded excluded gem
      * @return a randomly picked gem
      */
-    public static Gem pickRandomGem(Gem excluded){
+    public static Gem pickRandomGem(@NotNull Gem excluded){
         Random random = new Random();
         GemsEnum[] gems = GemsEnum.values();
         while (true) {
             Gem gem = gems[random.nextInt(getNumberOfGems())].getGem();
-            if (gem == excluded) continue;
-            else return gem;
+            if (gem != excluded) return gem;
         }
+    }
+
+    public static List<String> getGemIdList(){
+        List<String> list = new ArrayList<>();
+
+        for (GemsEnum gemsEnum : GemsEnum.values()){
+            list.add(gemsEnum.getGem().getId());
+        }
+
+        return list;
     }
 }

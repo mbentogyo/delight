@@ -1,7 +1,12 @@
-package dev.mbento.delight.gems.astra;
+package dev.mbento.delight.gem.gems;
 
-import dev.mbento.delight.gems.Gem;
+import dev.mbento.delight.gem.CooldownManager;
+import dev.mbento.delight.gem.Gem;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.time.Duration;
 
 public class AstraGem extends Gem {
     /**
@@ -37,22 +42,19 @@ public class AstraGem extends Gem {
     }
 
     @Override
-    public void onLeftClick() {
-
+    public void onLeftClick(@NotNull Player player) {
+        player.sendMessage(getName() + " LEFT CLICK");
+        CooldownManager.addCooldown(player, CooldownManager.CooldownType.LEFT_CLICK, Duration.ofSeconds(10));
     }
 
     @Override
-    public void onRightClick() {
-
+    public void onRightClick(@NotNull Player player) {
+        player.sendMessage(getName() + " RIGHT CLICK");
+        CooldownManager.addCooldown(player, CooldownManager.CooldownType.RIGHT_CLICK, Duration.ofSeconds(10));
     }
 
     @Override
-    public void onDrop() {
-
-    }
-
-    @Override
-    public void passivePower() {
+    public void tick() {
 
     }
 }

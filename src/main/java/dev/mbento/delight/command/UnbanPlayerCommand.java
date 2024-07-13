@@ -1,4 +1,4 @@
-package dev.mbento.delight.commands;
+package dev.mbento.delight.command;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

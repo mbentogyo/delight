@@ -1,8 +1,7 @@
-package dev.mbento.delight.configuration;
+package dev.mbento.delight.file;
 
 import dev.mbento.delight.DelightMain;
-import dev.mbento.delight.utilities.DelightConsole;
-import lombok.Setter;
+import dev.mbento.delight.utility.DelightConsole;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -18,15 +17,17 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+//Before you even start reading this class, just so you know that this will be replaced by a better system (that I haven't learned yet). Shut up for now since it works.
 public class ConfigMain {
     private static final DelightMain instance = DelightMain.getInstance();
-    @Setter private static LinkedHashMap<String, Object> defaults;
-    @Setter private static LinkedHashMap<String, List<String>> comments;
+    private static final LinkedHashMap<String, Object> defaults = new LinkedHashMap<>();
+    private static final LinkedHashMap<String, List<String>> comments = new LinkedHashMap<>();
 
     /**
      * Initializes the config
      * Use DelightMain.getInstance().getConfig() to get the config.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void initializeConfig() {
         instance.saveDefaultConfig();
 
@@ -59,14 +60,15 @@ public class ConfigMain {
 
         // Saving
         instance.saveConfig();
+
+        File playerFolder = new File(instance.getDataFolder(), "playerdata/");
+        if (!playerFolder.exists()) playerFolder.mkdirs();
     }
 
     /**
      * Sets the default values of the config.yml
      */
     private static void setDefaults(){
-        LinkedHashMap<String, Object> defaults = new LinkedHashMap<>();
-
         defaults.put("dead-players", Collections.emptyList());
         defaults.put("astra.left.cooldown", 60);
         defaults.put("astra.right.cooldown", 60);
@@ -88,16 +90,12 @@ public class ConfigMain {
 
         defaults.put("wealth.left.cooldown", 60);
         defaults.put("wealth.right.cooldown", 60);
-
-        setDefaults(defaults);
     }
 
     /**
      * Sets the comments of the config.yml
      */
     private static void setComments(){
-        LinkedHashMap<String, List<String>> comments = new LinkedHashMap<>();
-
         comments.put("header", Arrays.asList("Delight Configuration file", "Pro tip: Use dual spaces instead of tab, tab will cause an error (its deliberate)"));
         comments.put("dead-players", Arrays.asList("These players are ones that have zero-ed out on their lives.", "If you want to bring back a player, just use the command /bringback <player>"));
 
@@ -110,8 +108,6 @@ public class ConfigMain {
         comments.put("wealth", Collections.singletonList("Wealth Gem"));
 
         comments.put("config-version", Collections.singletonList("Configuration version, it doesn't do anything other than to tell you what version your plugin is using."));
-
-        setComments(comments);
     }
 
     /**
@@ -120,7 +116,7 @@ public class ConfigMain {
      * @param file file in question
      */
     private static void checkForTabs(File file){
-        Scanner scanner = null;
+        Scanner scanner;
 
         try {
             scanner = new Scanner(file);
@@ -128,7 +124,7 @@ public class ConfigMain {
             throw new RuntimeException(file.getAbsolutePath() + " has not been made. Scanner failed to read file."); //Shouldn't happen btw
         }
 
-        //TODO: change the tabs automatically than making the user do it
+        //TODO: change the tabs automatically than making the user do it (unnecessary honestly)
         int row = 0;
         while (scanner.hasNextLine()){
             row++;

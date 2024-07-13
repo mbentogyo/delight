@@ -1,4 +1,4 @@
-package dev.mbento.delight.utilities;
+package dev.mbento.delight.utility;
 
 import dev.mbento.delight.DelightMain;
 import org.bukkit.Bukkit;
@@ -37,6 +37,6 @@ public class DelightConsole {
      */
     public static void sendError(@NotNull String message){
         console.sendMessage(prefix + ChatColor.RED + "An error has occured! " + message);
-        console.sendMessage(prefix + ChatColor.RED + "Please open a bug report here:" + ChatColor.WHITE + ChatColor.UNDERLINE + DelightMain.getInstance().getDescription().getWebsite());
+        console.sendMessage(prefix + ChatColor.RED + "Please open a bug report here: " + ChatColor.WHITE + ChatColor.UNDERLINE + DelightMain.getInstance().getDescription().getWebsite());
     }
 }
