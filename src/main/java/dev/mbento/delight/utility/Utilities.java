@@ -48,9 +48,10 @@ public class Utilities {
      */
     @Nullable
     @SuppressWarnings("ConstantConditions")
-    public static String getStringFromItem(@NotNull ItemStack item, @NotNull String key){
+    public static String getStringFromItem(ItemStack item, @NotNull String key){
         NamespacedKey k = new NamespacedKey(DelightMain.getInstance(), key);
 
+        if (item == null) return null;
         if (!item.hasItemMeta()) return null;
 
         else {
@@ -96,7 +97,7 @@ public class Utilities {
 
         int currentGemLocation = -1;
         for (int i = 0; i < playerInventory.getSize(); i++){
-            if (GemsEnum.getByItem(Objects.requireNonNull(playerInventory.getItem(i))) != null ) {
+            if (GemsEnum.getByItem(playerInventory.getItem(i)) != null ) {
                 if (i < 9 || i == 40){
                     if (currentGemLocation == -1) currentGemLocation = i;
                     else {
@@ -114,14 +115,14 @@ public class Utilities {
         else { //If gem isn't found, make a new one
             //Check hotbar for empty spaces
             for (int i = 0; i <= 8; i++){
-                if (Objects.requireNonNull(playerInventory.getItem(i)).getType() == Material.AIR) {
+                if (playerInventory.getItem(i).getType() == Material.AIR) {
                     PlayerData.getGem(player).create(player, PlayerData.getLives(player), PlayerData.getGrade(player), i);
                     return i;
                 }
             }
 
             //Check offhand if empty
-            if (Objects.requireNonNull(playerInventory.getItem(40)).getType() == Material.AIR) {
+            if (playerInventory.getItem(40).getType() == Material.AIR) {
                 PlayerData.getGem(player).create(player, PlayerData.getLives(player), PlayerData.getGrade(player), 40);
                 return 40;
             }
