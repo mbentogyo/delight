@@ -58,7 +58,7 @@ public enum GemsEnum {
      * @return GemsEnum entry, null if none found
      */
     @Nullable
-    public static Gem getByItem(@NotNull ItemStack item){
+    public static Gem getByItem(@Nullable ItemStack item){
         String id = Utilities.getStringFromItem(item, "id");
         if (id == null) return null;
         return getById(id);

@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Utilities {
 
@@ -91,6 +90,7 @@ public class Utilities {
      * @param player the player
      * @return slot number of the gem
      */
+    @SuppressWarnings("ConstantConditions")
     @NotNull
     public static Integer getGemSlot(@NotNull Player player){
         PlayerInventory playerInventory = player.getInventory();

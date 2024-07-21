@@ -70,7 +70,6 @@ public class SwapEvents implements Listener {
             if (GemsEnum.getByItem(cursor) != null || GemsEnum.getByItem(currentItem) != null) {
                 e.setCancelled(true);
                 player.sendMessage(ChatColor.RED + "You can only switch slots by swapping to offhand or to your hotbar");
-                return;
             }
         }
     }
@@ -79,6 +78,8 @@ public class SwapEvents implements Listener {
     public void playerSwapHandItemsEvent(PlayerSwapHandItemsEvent e){
         Player player = e.getPlayer();
         Gem gem = PlayerData.getGem(player);
+
+        if (GemsEnum.getByItem(e.getMainHandItem()) == null && GemsEnum.getByItem(e.getOffHandItem()) == null) return;
 
         //Since this event is called before the actual swap, if the gem isn't at the gem slot, then it will be once the event is done.
         if (Utilities.getGemSlot(player) != 40) gem.getOffhandList().add(player);
