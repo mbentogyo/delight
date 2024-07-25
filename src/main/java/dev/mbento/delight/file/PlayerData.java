@@ -8,12 +8,14 @@ import dev.mbento.delight.gem.GemsEnum;
 import dev.mbento.delight.utility.DelightConsole;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerData {
     private static final DelightMain instance = DelightMain.getInstance();
@@ -29,16 +31,37 @@ public class PlayerData {
     }
 
     /**
-     * Sets the player's gem attributes
+     * Get the JsonObject from a file
+     * Null-check this for errors
+     * @param file the file
+     * @return the JsonObject, is nullable
+     */
+    @Nullable
+    private static JsonObject getJsonFromFile(File file){
+        try (FileReader fileReader = new FileReader(file)) {
+            return new Gson().fromJson(fileReader, JsonObject.class);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Sets a player
      * @param player the player
-     * @param gem the gem type
-     * @param lives how many lives (must be from 1-5)
-     * @param isPristine if the grade will be pristine
+     * @param data the map data, only put String, Character, Number, or Boolean
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void setPlayer(@NotNull OfflinePlayer player, @NotNull Gem gem, int lives, boolean isPristine) {
+    public static void setPlayer(@NotNull OfflinePlayer player, @NotNull Map<String, Object> data) {
         File playerFile = new File(instance.getDataFolder(), "playerdata/" + player.getUniqueId() + ".json");
-        if (!playerFile.exists()) {
+        JsonObject json = new JsonObject();
+        if (playerFile.exists()) {
+            json = getJsonFromFile(playerFile);
+
+            if (json == null) {
+                DelightConsole.sendError("File of " + player.getName() + " failed to read.");
+                return;
+            }
+        } else {
             try {
                 playerFile.createNewFile();
             } catch (IOException e) {
@@ -47,15 +70,24 @@ public class PlayerData {
             }
         }
 
-        JsonObject json = new JsonObject();
-        json.addProperty("gem", gem.getId());
-        json.addProperty("lives", lives);
-        json.addProperty("is_pristine", isPristine);
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (value instanceof String) json.addProperty(key, (String) value);
+            else if (value instanceof Character) json.addProperty(key, (Character) value);
+            else if (value instanceof Number) json.addProperty(key, (Number) value);
+            else if (value instanceof Boolean) json.addProperty(key, (Boolean) value);
+            else {
+                DelightConsole.sendError("Data of " + player.getName() + " contains invalid value.");
+                throw new RuntimeException("Data of " + player.getName() + " contains invalid value.");
+            }
+        }
 
         try (FileWriter fileWriter = new FileWriter(playerFile)){
             Gson gson = new Gson();
             gson.toJson(json, fileWriter);
-            if (player.isOnline()) playerMap.put(player, json);
+            playerMap.put(player, json);
         } catch (IOException e){
             DelightConsole.sendError("Failed to save player data for " + player.getName());
         }
@@ -65,33 +97,40 @@ public class PlayerData {
      * Sets a new player up with the default parameters
      * @param player the player
      */
-    public static void setNewPlayer(@NotNull OfflinePlayer player) {
-        setPlayer(player, GemsEnum.pickRandomGem(), 5, false);
+    public static void setNewPlayer(@NotNull OfflinePlayer player){
+        Map<String, Object> data = new HashMap<>();
+        data.put("gem", GemsEnum.pickRandomGem().getId());
+        data.put("lives", 5);
+        data.put("is_pristine", false);
+        setPlayer(player, data);
     }
 
     /**
-     * Gets the Json object of the player and puts it in a HashMap
-     * Did this so it doesn't have to access the file for getting each attribute
+     * Get a players data
      * @param player the player
-     * @return the Json object
+     * @return the jsonObject data
      */
-    public static JsonObject getJson(@NotNull OfflinePlayer player) {
+    @NotNull
+    private static JsonObject getData(@NotNull OfflinePlayer player){
         File playerFile = new File(instance.getDataFolder(), "playerdata/" + player.getUniqueId() + ".json");
-        if (!playerFile.exists()) setNewPlayer(player); //theoretically shouldn't happen but whatever
 
         if (!playerMap.containsKey(player)) {
-            try (FileReader fileReader = new FileReader(playerFile)) {
-                JsonObject jsonObject = new Gson().fromJson(fileReader, JsonObject.class);
-                playerMap.put(player, jsonObject);
-                fileReader.close();
-                return jsonObject;
-            } catch (IOException e) {
-                DelightConsole.sendError("Failed to load player data for " + player.getName());
-                return null;
+            JsonObject json = getJsonFromFile(playerFile);
+            if (json == null) {
+                DelightConsole.sendError("File of " + player.getName() + " failed to read.");
+                throw new RuntimeException("File of " + player.getName() + " failed to read.");
             }
-        } else {
-            return playerMap.get(player);
+
+            if (!json.has("gem") || !json.has("lives") || !json.has("is_pristine")) {
+                setNewPlayer(player);
+                return playerMap.get(player);
+            } else {
+                playerMap.put(player, json);
+                return json;
+            }
         }
+
+        else return playerMap.get(player);
     }
 
     /**
@@ -103,7 +142,7 @@ public class PlayerData {
     @NotNull
     @SuppressWarnings("ConstantConditions")
     public static Gem getGem(@NotNull OfflinePlayer player) {
-        return GemsEnum.getById(getJson(player).get("gem").getAsString());
+        return GemsEnum.getById(getData(player).get("gem").getAsString());
     }
 
     /**
@@ -113,7 +152,7 @@ public class PlayerData {
      */
     @SuppressWarnings("ConstantConditions")
     public static Integer getLives(@NotNull OfflinePlayer player) {
-        return getJson(player).get("lives").getAsInt();
+        return getData(player).get("lives").getAsInt();
     }
 
     /**
@@ -123,7 +162,7 @@ public class PlayerData {
      */
     @SuppressWarnings("ConstantConditions")
     public static Boolean getGrade(@NotNull OfflinePlayer player) {
-        return getJson(player).get("is_pristine").getAsBoolean();
+        return getData(player).get("is_pristine").getAsBoolean();
     }
 
     /**

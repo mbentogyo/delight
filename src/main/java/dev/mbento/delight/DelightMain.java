@@ -1,11 +1,14 @@
 package dev.mbento.delight;
 
+import dev.mbento.delight.command.GiveItemCommand;
 import dev.mbento.delight.command.SetGemCommand;
 import dev.mbento.delight.command.UnbanPlayerCommand;
-import dev.mbento.delight.event.InteractEvent;
-import dev.mbento.delight.event.PlayerItemEvents;
+import dev.mbento.delight.event.CommandEvents;
+import dev.mbento.delight.event.ItemEvents;
+import dev.mbento.delight.event.PlayerEvents;
 import dev.mbento.delight.event.SwapEvents;
 import dev.mbento.delight.file.ConfigMain;
+import dev.mbento.delight.item.ItemsEnum;
 import dev.mbento.delight.utility.DelightConsole;
 import dev.mbento.delight.utility.Repeater;
 import lombok.Getter;
@@ -24,8 +27,7 @@ public final class DelightMain extends JavaPlugin {
     private PluginManager pluginManager;
     public static Repeater repeater;
     @Getter private static final AtomicInteger time = new AtomicInteger(0); // measured in ticks when the server starts
-    @Getter private static Plugin betterTeams;
-    @Getter private static Plugin openInv;
+    public static final int LORE_DIVIDE_LENGTH = 30;
 
     public static final ItemStack AIR = new ItemStack(Material.AIR, 1);
 
@@ -39,12 +41,14 @@ public final class DelightMain extends JavaPlugin {
      */
     @SuppressWarnings("ConstantConditions")
     private void registerThings(){
-        pluginManager.registerEvents(new PlayerItemEvents(), this);
-        pluginManager.registerEvents(new InteractEvent(), this);
+        pluginManager.registerEvents(new PlayerEvents(), this);
+        pluginManager.registerEvents(new ItemEvents(), this);
         pluginManager.registerEvents(new SwapEvents(), this);
+        pluginManager.registerEvents(new CommandEvents(), this);
 
         getCommand("setgem").setExecutor(new SetGemCommand());
         getCommand("bringback").setExecutor(new UnbanPlayerCommand());
+        getCommand("giveitem").setExecutor(new GiveItemCommand());
     }
 
     @Override
@@ -64,12 +68,7 @@ public final class DelightMain extends JavaPlugin {
             }
         }.runTaskTimerAsynchronously(instance, 0, 0));
 
-        betterTeams = pluginManager.getPlugin("BetterTeams");
-        openInv = pluginManager.getPlugin("OpenInv");
-
-        if (betterTeams != null) DelightConsole.sendWithPrefix(ChatColor.GREEN + "BetterTeams plugin detected. Adding...");
-        if (openInv != null) DelightConsole.sendWithPrefix(ChatColor.GREEN + "OpenInv plugin detected. Adding...");
-
+        ItemsEnum.loadItems();
         DelightConsole.sendWithPrefix(ChatColor.GREEN + "Delight v" + instance.getDescription().getVersion() + " has loaded successfully.");
     }
 

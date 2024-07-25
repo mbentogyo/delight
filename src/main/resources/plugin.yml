@@ -17,6 +17,9 @@ commands:
   setgem:
     usage: /setgem <player> <lives> <isPristine>
     permission: delight.*
+  giveitem:
+    usage: /giveitem <player> <item>
+    permission: delight.*
 permissions:
   delight.*:
     description: All the permissions of Delight plugin

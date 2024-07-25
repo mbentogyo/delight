@@ -77,7 +77,7 @@ public class Utilities {
             lineBuilder.append(word).append(" ");
 
             if (lineBuilder.length() > minChar - 1 || currentIteration == words.length){
-                list.add(lineBuilder.toString().trim() + "\n");
+                list.add(ChatColor.GRAY + lineBuilder.toString().trim() + "\n");
                 lineBuilder.setLength(0);
             }
         }
@@ -113,22 +113,26 @@ public class Utilities {
 
         if (currentGemLocation != -1) return currentGemLocation;
         else { //If gem isn't found, make a new one
+            DelightConsole.sendError("Player " + player.getName() + " didn't have a gem in their inventory. Adding...");
+
             //Check hotbar for empty spaces
             for (int i = 0; i <= 8; i++){
-                if (playerInventory.getItem(i).getType() == Material.AIR) {
-                    PlayerData.getGem(player).create(player, PlayerData.getLives(player), PlayerData.getGrade(player), i);
+                ItemStack item = playerInventory.getItem(i);
+                if (item == null || item.getType() == Material.AIR) {
+                    PlayerData.getGem(player).create(player, i);
                     return i;
                 }
             }
 
             //Check offhand if empty
-            if (playerInventory.getItem(40).getType() == Material.AIR) {
-                PlayerData.getGem(player).create(player, PlayerData.getLives(player), PlayerData.getGrade(player), 40);
+            ItemStack item = playerInventory.getItem(40);
+            if (item == null || item.getType() == Material.AIR) {
+                PlayerData.getGem(player).create(player, 40);
                 return 40;
             }
 
             //Just replace 8th slot with the gem, its the player's fault lol
-            PlayerData.getGem(player).create(player, PlayerData.getLives(player), PlayerData.getGrade(player), 8);
+            PlayerData.getGem(player).create(player, 8);
             return 8;
         }
     }

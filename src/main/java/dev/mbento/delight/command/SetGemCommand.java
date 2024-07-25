@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class SetGemCommand implements TabExecutor {
     @Override
@@ -74,7 +75,7 @@ public class SetGemCommand implements TabExecutor {
 
         //Get the player's old gem before rewriting with the new one
         Gem oldGem = PlayerData.getGem(player);
-        PlayerData.setPlayer(player, gem, lives, isPristine);
+        PlayerData.setPlayer(player, Map.of("gem", gem.getId(), "lives", lives, "is_pristine", isPristine));
 
         //Code for when the player is online (Too much explanation, but code is long and I had a headache because of this)
         if (player.isOnline()) {
@@ -88,7 +89,7 @@ public class SetGemCommand implements TabExecutor {
             if (!isPristine) CooldownManager.removePlayer(player);
 
             //Not directly putting it in to assure it did change
-            gem.create(onlinePlayer, PlayerData.getLives(player), PlayerData.getGrade(player), null);
+            gem.create(onlinePlayer, null);
 
             //If item is in offhand, then add player to the new gem's offhand list
             if (Utilities.getGemSlot(onlinePlayer) == 40) gem.getOffhandList().add(player.getPlayer());
@@ -130,6 +131,7 @@ public class SetGemCommand implements TabExecutor {
         else if (strings.length == 4){
             return Arrays.asList("rough", "pristine");
         }
-        return null;
+
+        return List.of();
     }
 }

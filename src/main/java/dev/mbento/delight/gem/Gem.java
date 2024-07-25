@@ -1,9 +1,12 @@
 package dev.mbento.delight.gem;
 
+import dev.mbento.delight.DelightMain;
+import dev.mbento.delight.file.PlayerData;
 import dev.mbento.delight.utility.Utilities;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -22,8 +25,6 @@ import java.util.UUID;
 
 @Getter
 public abstract class Gem {
-    private static final int LORE_DIVIDE_LENGTH = 20;
-
     private final String name;
     private final String id;
     private final String leftName;
@@ -59,13 +60,15 @@ public abstract class Gem {
     /**
      * Creates the gem for a player
      * @param player the player
-     * @param lives the number of lives (shouldn't exceed 5)
-     * @param grade the grade of the gem
      * @param slot what slot to put the gem to, null if you want it to replace an existing slot
      */
     @SuppressWarnings("ConstantConditions")
-    public void create(@NotNull Player player, int lives, boolean grade, @Nullable Integer slot){
+    public void create(@NotNull Player player, @Nullable Integer slot){
+        int lives = PlayerData.getLives(player);
+        boolean grade = PlayerData.getGrade(player);
+
         ItemStack item = new ItemStack(Material.EMERALD, 1);
+        item.addUnsafeEnchantment(Enchantment.DEPTH_STRIDER, 1);
         ItemMeta meta = item.getItemMeta();
 
         meta.setDisplayName(this.name);
@@ -74,13 +77,13 @@ public abstract class Gem {
 
         //Starting Lore
         List<String> lore = new ArrayList<>(Arrays.asList(ChatColor.GRAY + "Fragility (Lives): " + Utilities.getColorOfLives(lives), ChatColor.GRAY + "Grade: " + Utilities.getColorOfGrade(grade), "", ChatColor.AQUA + "Passive Power: " + this.passiveName, ChatColor.YELLOW + "" + ChatColor.BOLD + "OFFHAND"));
-        for (String line : Utilities.splitStringByCharacters(this.passiveLore, LORE_DIVIDE_LENGTH)) lore.add(ChatColor.GRAY + line);
+        lore.addAll(Utilities.splitStringByCharacters(this.passiveLore, DelightMain.LORE_DIVIDE_LENGTH));
 
         if (grade){
             lore.addAll(Arrays.asList("", ChatColor.AQUA + "First Power: " + this.leftName, ChatColor.YELLOW + "" +ChatColor.BOLD + "LEFT CLICK"));
-            for (String line : Utilities.splitStringByCharacters(this.leftLore, LORE_DIVIDE_LENGTH)) lore.add(ChatColor.GRAY + line);
+            lore.addAll(Utilities.splitStringByCharacters(this.leftLore, DelightMain.LORE_DIVIDE_LENGTH));
             lore.addAll(Arrays.asList("", ChatColor.AQUA + "Second Power: " + this.rightName, ChatColor.YELLOW + "" +ChatColor.BOLD + "RIGHT CLICK"));
-            for (String line : Utilities.splitStringByCharacters(this.rightLore, LORE_DIVIDE_LENGTH)) lore.add(ChatColor.GRAY + line);
+            lore.addAll(Utilities.splitStringByCharacters(this.rightLore, DelightMain.LORE_DIVIDE_LENGTH));
         }
 
         meta.setLore(lore);

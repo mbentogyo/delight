@@ -21,17 +21,6 @@ public class DelightConsole {
     }
 
     /**
-     * Send a message with [Delight] prefix
-     * Sends a message per String in List
-     * @param messages List of messages to send
-     */
-    public static void sendWithPrefix(@NotNull List<String> messages) {
-        for (String message : messages) {
-            console.sendMessage(prefix + message);
-        }
-    }
-
-    /**
      * Sends an error on the console
      * @param message the message
      */

@@ -100,9 +100,7 @@ public enum GemsEnum {
     public static List<String> getGemIdList(){
         List<String> list = new ArrayList<>();
 
-        for (GemsEnum gemsEnum : GemsEnum.values()){
-            list.add(gemsEnum.getGem().getId());
-        }
+        for (GemsEnum gemsEnum : GemsEnum.values()) list.add(gemsEnum.getGem().getId());
 
         return list;
     }

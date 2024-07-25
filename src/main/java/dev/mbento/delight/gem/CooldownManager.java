@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CooldownManager {
     @Getter public enum CooldownType {
-        LEFT_CLICK(), RIGHT_CLICK();
+        LEFT_CLICK(), RIGHT_CLICK(), ITEM();
         private final Map<OfflinePlayer, Instant> map;
         CooldownType(){ this.map = new ConcurrentHashMap<>(); }
     }
