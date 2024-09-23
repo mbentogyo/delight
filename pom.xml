@@ -86,21 +86,17 @@
             <artifactId>annotations-java5</artifactId>
             <version>24.1.0</version>
         </dependency>
-        <!-- Uhh so maybe remove javatuples if you dont use it-->
+        <!-- Uhh so maybe remove javatuples if you dont use it
         <dependency>
             <groupId>org.javatuples</groupId>
             <artifactId>javatuples</artifactId>
             <version>1.2</version>
         </dependency>
+        -->
         <dependency>
             <groupId>com.github.booksaw</groupId>
             <artifactId>BetterTeams</artifactId>
             <version>4.9.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jikoo.OpenInv</groupId>
-            <artifactId>openinvapi</artifactId>
-            <version>4.4.3</version>
         </dependency>
     </dependencies>
 </project>

@@ -6,8 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 public class DelightConsole {
     private static final ConsoleCommandSender console = Bukkit.getConsoleSender();
     private static final String prefix = ChatColor.AQUA + "[Delight]" + ChatColor.RESET + " ";

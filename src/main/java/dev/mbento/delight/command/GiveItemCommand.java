@@ -45,7 +45,7 @@ public class GiveItemCommand implements TabExecutor {
             }
         } else amount = 1;
 
-        ItemStack itemStack = new ItemStack(item.getItem());
+        ItemStack itemStack = item.getItem().clone();
         itemStack.setAmount(amount);
         player.getInventory().addItem(itemStack);
 

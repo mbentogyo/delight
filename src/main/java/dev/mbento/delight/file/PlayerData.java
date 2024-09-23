@@ -150,7 +150,6 @@ public class PlayerData {
      * @param player the player
      * @return number of lives
      */
-    @SuppressWarnings("ConstantConditions")
     public static Integer getLives(@NotNull OfflinePlayer player) {
         return getData(player).get("lives").getAsInt();
     }
@@ -160,7 +159,6 @@ public class PlayerData {
      * @param player the player
      * @return true if the grade is pristine, false if not pristine
      */
-    @SuppressWarnings("ConstantConditions")
     public static Boolean getGrade(@NotNull OfflinePlayer player) {
         return getData(player).get("is_pristine").getAsBoolean();
     }

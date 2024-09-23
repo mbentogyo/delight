@@ -2,30 +2,20 @@ package dev.mbento.delight.gem.gems;
 
 import dev.mbento.delight.gem.CooldownManager;
 import dev.mbento.delight.gem.Gem;
+import dev.mbento.delight.utility.DelightConsole;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 
 public class LifeGem extends Gem {
-    /**
-     * Passive
-     * Feed Animals And Grow Plants
-     * By Crouch Clicking With Bare Hand, 3x DamageTo Undead Mobs, 2x Saturation.Immune to withering heal half a heart every 5 seconds 2 more hearts from Golden Apples.
-     *
-     *
-     * -HEART DRAINER
-     * Removes 4 Hearts 20s
-     * Removes 2 Hearts R4, 1m
-    *
-     * -CIRCLE OF LIFE
-     *
-     * Summons a 8 block wide zone that follows you
-     * Gives Trusted People +4 Hearts And Untrusted-4 Hearts
-     * Slowly Mends Your Armor And Tools If Trusted Caster Only Can Steal Health While Zone is active
-     * Gives Trusted Players +5 Hearts For 1m And 30 Seconds. (Radius 4)
-     */
+    private static Set<Vector> vectors = new HashSet<>();
+    private static Set<Player> rightPowerPlayers = new HashSet<>();
+
     public LifeGem() {
         super(
                 ChatColor.AQUA + "Life Gem",
@@ -35,8 +25,19 @@ public class LifeGem extends Gem {
                 "Circle of Life",
                 "Summons a zone that heals trusted players",
                 "Environmentalist",
-                "Feed animals and grow plants by pressing right click with bare hands"
+                "Grants Saturation II, immunity to Withering, "
         );
+
+        for (double i = 7.5; i <= 360; i+=7.5){
+            double angleRadians = Math.toRadians(i);
+
+            double newX = Math.cos(angleRadians);
+            double newZ = Math.sin(angleRadians);
+
+            Vector vector = new Vector(newX, 0, newZ);
+            vector.normalize().multiply(4);
+            vectors.add(vector);
+        }
     }
 
     @Override
@@ -53,5 +54,17 @@ public class LifeGem extends Gem {
 
     @Override
     public void tick() {
+
+    }
+
+    public static void particles() {
+        //for (Player player : getOffhandList()){
+        //    World world = player.getWorld();
+        //    Vector playerVector = player.getLocation().add(0, 0.2, 0).toVector();
+
+        //    for (Vector vector : vectors){
+        //        world.spawnParticle(Particle.VILLAGER_HAPPY, playerVector.clone().add(vector).toLocation(world), 1);
+        //    }
+        //}
     }
 }

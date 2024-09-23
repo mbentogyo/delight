@@ -68,7 +68,7 @@ public abstract class Gem {
         boolean grade = PlayerData.getGrade(player);
 
         ItemStack item = new ItemStack(Material.EMERALD, 1);
-        item.addUnsafeEnchantment(Enchantment.DEPTH_STRIDER, 1);
+        item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         ItemMeta meta = item.getItemMeta();
 
         meta.setDisplayName(this.name);
@@ -92,7 +92,6 @@ public abstract class Gem {
         Utilities.storeStringInItem(item, "id", this.id);
         Utilities.storeStringInItem(item, "is_upgraded", String.valueOf(grade));
         Utilities.storeStringInItem(item, "preventstack", UUID.randomUUID().toString());
-
         //Method call null check
         player.getInventory().setItem(Objects.requireNonNullElseGet(slot, () -> Utilities.getGemSlot(player)), item);
     }
@@ -109,7 +108,7 @@ public abstract class Gem {
 
     /**
      * Action done when gem is in offhand
-     * Done every 1/4ths of a second
+     * Done every 1/2 a second
      */
     public abstract void tick();
 

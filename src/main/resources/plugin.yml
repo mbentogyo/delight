@@ -7,9 +7,7 @@ author: mbento
 website: https://github.com/mbentogyo/delight
 description: Bliss plugin but my version
 prefix: Delight
-softdepend:
-  - OpenInv
-  - BetterTeams
+softDepend: [BetterTeams]
 commands:
   bringback:
     usage: /bringback <player>

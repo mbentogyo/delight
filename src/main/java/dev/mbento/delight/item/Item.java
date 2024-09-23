@@ -21,10 +21,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Getter
 public abstract class Item {
-    public final ItemStack item;
+    private final ItemStack item;
     private final String name;
     private final String id;
 
@@ -36,7 +37,7 @@ public abstract class Item {
         //Meta
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_POTION_EFFECTS);
+        meta.addItemFlags(ItemFlag.values());
         meta.setUnbreakable(true);
 
         List<String> itemLore = new ArrayList<>();
@@ -65,7 +66,9 @@ public abstract class Item {
 
     public void consumeItem(@NotNull Player player) {
         ItemStack item = player.getInventory().getItemInMainHand();
-        item.setAmount(item.getAmount() - 1); //Not sure if this'll cause a bug with timings and stuff, further testing required
+        if (!Objects.equals(Utilities.getStringFromItem(item, "id"), id)) item = player.getInventory().getItemInOffHand();
+
+        item.setAmount(item.getAmount() - 1); //Not sure if this'll STILL cause a bug with timings and stuff, further testing required
     }
 
     public abstract void onUse(@NotNull Player player);

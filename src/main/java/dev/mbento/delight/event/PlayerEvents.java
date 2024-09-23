@@ -3,15 +3,14 @@ package dev.mbento.delight.event;
 import dev.mbento.delight.file.PlayerData;
 import dev.mbento.delight.gem.Gem;
 import dev.mbento.delight.gem.GemsEnum;
+import dev.mbento.delight.gem.gems.SpeedGem;
 import dev.mbento.delight.utility.Utilities;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -31,15 +30,15 @@ public class PlayerEvents implements Listener {
             if (GemsEnum.getByItem(item) != null) e.getDrops().remove(item);
         }
 
-        Gem gem = PlayerData.getGem(player);
         int lives = PlayerData.getLives(player);
         boolean isPristine = PlayerData.getGrade(player);
 
         lives--;
 
+        player.sendMessage(ChatColor.RED + "You lost a life! You now have " + lives + " lives remaining.");
         //TODO banning or whatever
         if (lives <= 0){
-            player.sendMessage(ChatColor.GREEN + "lol testing done");
+            player.sendMessage(ChatColor.GREEN + "Testing done. Gave 5 lives.");
             lives = 5;
         }
 
@@ -50,6 +49,18 @@ public class PlayerEvents implements Listener {
         }
 
         PlayerData.setPlayer(player, Map.of("lives", lives, "is_pristine", isPristine));
+
+        //Lifesteal
+        Player killer = player.getKiller();
+        if (killer == null) return;
+        int killerLives = PlayerData.getLives(killer);
+
+        if (killerLives < 5){
+            killer.sendMessage(ChatColor.GREEN + "You killed " + player.getName() + " and stole a life! You now have " + ++killerLives + " lives.");
+            PlayerData.setPlayer(killer, Map.of("lives", killerLives));
+        } else {
+            killer.sendMessage(ChatColor.GREEN + "You killed " + player.getName() + "! You did not recieve the life as your lives are already full.");
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -69,14 +80,14 @@ public class PlayerEvents implements Listener {
         if (PlayerData.hasPlayedBefore(player)) {
             PlayerData.getGem(player).create(player, null);
             if (Utilities.getGemSlot(player) == 40) PlayerData.getGem(player).getOffhandList().add(player);
+
+            SpeedGem.resetAttackSpeed(player);
         }
 
         else {
             PlayerData.setNewPlayer(player);
             Gem gem = PlayerData.getGem(player);
-
             gem.create(player, 8);
-
             player.sendMessage(ChatColor.GREEN + "You have been given the " + ChatColor.RESET + gem.getName());
         }
     }

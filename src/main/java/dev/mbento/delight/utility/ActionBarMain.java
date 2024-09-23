@@ -15,13 +15,13 @@ public class ActionBarMain {
      * @param rightClick how many seconds are remaining (0 means ready)
      * @param passiveActive if passive is currently activepassiveActive
      */
-    public static void sendToPlayer(@NotNull Player player, boolean leftClick, boolean passiveActive, boolean rightClick) {
+    public static void sendToPlayer(@NotNull Player player, long leftClick, boolean passiveActive, long rightClick) {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(
-                (leftClick? ChatColor.GREEN + "READY" : ChatColor.RED + "NOT READY")
+                (leftClick == 0? ChatColor.GREEN + "READY" : ChatColor.RED + String.valueOf(leftClick))
                 + ChatColor.WHITE + " | " +
                 (passiveActive? ChatColor.GREEN + "ACTIVE" : ChatColor.RED + "INACTIVE")
                 + ChatColor.WHITE + " | " +
-                (rightClick? ChatColor.GREEN + "READY" : ChatColor.RED + "NOT READY")
+                (rightClick == 0? ChatColor.GREEN + "READY" : ChatColor.RED + String.valueOf(rightClick))
         ));
     }
 

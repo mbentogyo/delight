@@ -30,11 +30,6 @@ public class UpgradeItem extends Item {
 
     @Override
     public void onUse(@NotNull Player player) {
-        if (CooldownManager.hasCooldown(player, CooldownManager.CooldownType.ITEM)) {
-            player.sendMessage(ChatColor.RED + "You can use this item again at " + CooldownManager.getRemainingTime(player, CooldownManager.CooldownType.ITEM) + " seconds.");
-            return;
-        }
-
         if (PlayerData.getGrade(player)){
             player.sendMessage(ChatColor.RED + "Your gem is already " + ChatColor.GREEN + "Pristine" + ChatColor.RED + "!");
             return;

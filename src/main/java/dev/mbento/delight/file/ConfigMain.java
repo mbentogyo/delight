@@ -69,7 +69,6 @@ public class ConfigMain {
      * Sets the default values of the config.yml
      */
     private static void setDefaults(){
-        defaults.put("dead-players", Collections.emptyList());
         defaults.put("astra.left.cooldown", 60);
         defaults.put("astra.right.cooldown", 60);
 
@@ -97,7 +96,6 @@ public class ConfigMain {
      */
     private static void setComments(){
         comments.put("header", Arrays.asList("Delight Configuration file", "Pro tip: Use dual spaces instead of tab, tab will cause an error (its deliberate)"));
-        comments.put("dead-players", Arrays.asList("These players are ones that have zero-ed out on their lives.", "If you want to bring back a player, just use the command /bringback <player>"));
 
         comments.put("astra", Collections.singletonList("Astra Gem"));
         comments.put("fire", Collections.singletonList("Fire Gem"));

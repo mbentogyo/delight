@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemEvents implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void playerInteractEvent(PlayerInteractEvent e){
+    public static void playerInteractEvent(PlayerInteractEvent e){
         ItemStack item = e.getItem();
         Player player = e.getPlayer();
         Action action = e.getAction();
@@ -33,14 +33,14 @@ public class ItemEvents implements Listener {
                 //Left Click
                 if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
                     if (CooldownManager.hasCooldown(player, CooldownManager.CooldownType.LEFT_CLICK)) {
-                        player.sendMessage(ChatColor.RED + "You are on cooldown. You may use your gem after " + CooldownManager.getRemainingTime(player, CooldownManager.CooldownType.LEFT_CLICK) + " seconds.");
+                        player.sendMessage(ChatColor.RED + "You are on cooldown. You may use your gem after " + CooldownManager.getRemainingTime(player, CooldownManager.CooldownType.LEFT_CLICK) + "s.");
                     } else PlayerData.getGem(player).onLeftClick(player);
                 }
 
                 //Right Click
                 else if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
                     if (CooldownManager.hasCooldown(player, CooldownManager.CooldownType.RIGHT_CLICK)) {
-                        player.sendMessage(ChatColor.RED + "You are on cooldown. You may use your gem after " + CooldownManager.getRemainingTime(player, CooldownManager.CooldownType.RIGHT_CLICK) + " seconds.");
+                        player.sendMessage(ChatColor.RED + "You are on cooldown. You may use your gem after " + CooldownManager.getRemainingTime(player, CooldownManager.CooldownType.RIGHT_CLICK) + "s.");
 
                     } else PlayerData.getGem(player).onRightClick(player);
                 }
@@ -49,9 +49,15 @@ public class ItemEvents implements Listener {
 
         //TODO for items
         Item dItem = ItemsEnum.getByItem(item);
-        if (dItem != null){
-            e.setCancelled(true);
+        if (dItem != null) {
             if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+                e.setCancelled(true);
+
+                if (CooldownManager.hasCooldown(player, CooldownManager.CooldownType.ITEM)) {
+                    player.sendMessage(ChatColor.RED + "You can use this item again at " + CooldownManager.getRemainingTime(player, CooldownManager.CooldownType.ITEM) + "s.");
+                    return;
+                }
+
                 dItem.onUse(player);
             }
         }

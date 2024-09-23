@@ -1,5 +1,6 @@
 package dev.mbento.delight.event;
 
+import dev.mbento.delight.file.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -11,7 +12,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 
 public class CommandEvents implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void playerCommand(PlayerCommandPreprocessEvent e){
+    public void playerCommandPreprocessEvent(PlayerCommandPreprocessEvent e){
         String message = e.getMessage().trim();
         if (!message.startsWith("/clear")) return;
 
@@ -22,11 +23,12 @@ public class CommandEvents implements Listener {
 
         if (player == null) return;
 
+        PlayerData.getGem(player).getOffhandList().remove(player);
         player.sendMessage(ChatColor.RED + "Your inventory has been cleared, and therefor your gem as well. Leave and rejoin to get your gem back.");
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void serverCommand(ServerCommandEvent e){
+    public void serverCommandEvent(ServerCommandEvent e){
         String message = e.getCommand().trim();
         if (!message.startsWith("clear")) return;
 
@@ -36,5 +38,6 @@ public class CommandEvents implements Listener {
         if (player == null) return;
 
         player.sendMessage(ChatColor.RED + "Your inventory has been cleared. Leave and rejoin to get your gem back.");
+        PlayerData.getGem(player).getOffhandList().remove(player);
     }
 }

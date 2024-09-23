@@ -5,6 +5,7 @@ import dev.mbento.delight.gem.CooldownManager;
 import dev.mbento.delight.gem.Gem;
 import dev.mbento.delight.gem.GemsEnum;
 import dev.mbento.delight.item.Item;
+import dev.mbento.delight.utility.Utilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -31,19 +32,19 @@ public class RouletteItem extends Item {
 
     @Override
     public void onUse(@NotNull Player player) {
-        if (CooldownManager.hasCooldown(player, CooldownManager.CooldownType.ITEM)) {
-            player.sendMessage(ChatColor.RED + "You can use this item again at " + CooldownManager.getRemainingTime(player, CooldownManager.CooldownType.ITEM) + " seconds.");
-            return;
-        }
-
-        Gem gem = GemsEnum.pickRandomGem(PlayerData.getGem(player));
+        Gem oldGem = PlayerData.getGem(player);
+        Gem gem = GemsEnum.pickRandomGem(oldGem);
         PlayerData.setPlayer(player, Map.of("gem", gem.getId()));
         gem.create(player, null);
-        player.playNote(player.getLocation(), Instrument.PLING, Note.natural(1, Note.Tone.C)); //WIP
 
+        //Offhand
+        oldGem.getOffhandList().remove(player);
+        if (Utilities.getGemSlot(player) == 40) gem.getOffhandList().add(player.getPlayer());
+
+        //Success
+        player.playNote(player.getLocation(), Instrument.PLING, Note.natural(1, Note.Tone.C)); //WIP
         CooldownManager.addCooldown(player, CooldownManager.CooldownType.ITEM, Duration.ofSeconds(3));
         player.sendMessage(ChatColor.GREEN + "Your gem has turned into a " + gem.getName() + ChatColor.GREEN + "!");
         consumeItem(player);
-
     }
 }

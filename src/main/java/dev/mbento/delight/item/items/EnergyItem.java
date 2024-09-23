@@ -31,11 +31,6 @@ public class EnergyItem extends Item {
 
     @Override
     public void onUse(@NotNull Player player) {
-        if (CooldownManager.hasCooldown(player, CooldownManager.CooldownType.ITEM)) {
-            player.sendMessage(ChatColor.RED + "You can use this item again at " + CooldownManager.getRemainingTime(player, CooldownManager.CooldownType.ITEM) + " seconds.");
-            return;
-        }
-
         int lives = PlayerData.getLives(player);
         if (lives == 5) {
             player.sendMessage(ChatColor.RED + "You cannot have more than 5 lives!");
@@ -48,7 +43,7 @@ public class EnergyItem extends Item {
         player.playNote(player.getLocation(), Instrument.PLING, Note.natural(1, Note.Tone.C)); //WIP
 
         CooldownManager.addCooldown(player, CooldownManager.CooldownType.ITEM, Duration.ofSeconds(3));
-        player.sendMessage(ChatColor.GREEN + "Your have gained an additional life! You now have " + lives + " lives");
+        player.sendMessage(ChatColor.GREEN + "Your have gained an additional life! You now have " + lives + " lives!");
         consumeItem(player);
     }
 }

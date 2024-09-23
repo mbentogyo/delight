@@ -8,17 +8,23 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class Utilities {
 
@@ -90,7 +96,6 @@ public class Utilities {
      * @param player the player
      * @return slot number of the gem
      */
-    @SuppressWarnings("ConstantConditions")
     @NotNull
     public static Integer getGemSlot(@NotNull Player player){
         PlayerInventory playerInventory = player.getInventory();
@@ -197,5 +202,45 @@ public class Utilities {
         }
 
         return null;
+    }
+
+    /**
+     * Removes entities that aren't players from a list of entities
+     * @param list the list
+     */
+    public static List<Player> getPlayersFromList(List<Entity> list){
+        List<Player> players = new ArrayList<>();
+        for (Entity entity : list) if (entity instanceof Player) players.add((Player) entity);
+        return players;
+    }
+
+    /**
+     * Random chance generator
+     * @param chance the chance out of a hundred (70% is 70)
+     * @return true or false, depending if the chance gets it
+     */
+    public static Boolean randomChance(int chance){
+        if (chance > 100) throw new RuntimeException("Chance cannot be larger than 100!");
+        Random random = new Random();
+        return random.nextInt(100) < chance;
+    }
+
+    /**
+     * Check if an attack is a critical hit
+     * Only to be used for damage events
+     * @param player the player
+     * @return true if a critical hit, false if not
+     */
+    public static boolean isCritical(Player player){
+        return  player.getFallDistance() > 0 // A player must be falling.
+                && !((Entity) player).isOnGround() // A player must not be on the ground.
+                && !player.isClimbing() // A player must not be on a ladder or any type of vine.
+                && !player.getLocation().getBlock().isLiquid() // A player must not be in water.
+                && !player.hasPotionEffect(PotionEffectType.BLINDNESS) // A player must not be affected by Blindness.
+                && !player.hasPotionEffect(PotionEffectType.SLOW_FALLING) // A player must not be affected by Slow Falling.
+                && !player.isInsideVehicle() // A player must not be riding an entity.
+                && !player.isSprinting() // A player must not be faster than walking (Sprinting)
+                && !player.isFlying() // A player must not be faster than walking (Flying)
+                && !(player.hasCooldown(player.getInventory().getItemInMainHand().getType())); // A player's attack must be charged
     }
 }
